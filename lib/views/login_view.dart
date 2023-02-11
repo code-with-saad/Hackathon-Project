@@ -1,9 +1,11 @@
 // ignore_for_file: use_build_context_synchronously
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:hackathon_project/views/home_view.dart';
-import 'package:hackathon_project/views/signup_view.dart';
+import 'package:hackathon_project/utils/constant.dart';
+import '../widgets/error.dart';
+import '../widgets/loading.dart';
+import 'home_view.dart';
+import 'signup_view.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({Key? key}) : super(key: key);
@@ -16,20 +18,47 @@ class _LoginViewState extends State<LoginView> {
   TextEditingController email = TextEditingController();
   TextEditingController password = TextEditingController();
 
-  bool isobsecure = true;
-
   login() async {
     try {
-      final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: email.text, password: password.text);
-           Navigator.pushReplacement( 
-            context, MaterialPageRoute( builder: (context) => HomeView()));
+      showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (BuildContext context) {
+          return LoadingDialog();
+        },
+      );
+      UserCredential userCredential = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(
+              email: email.text, password: password.text);
+      email.text = "";
+      password.text = "";
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => HomeView()),
+      );
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
-        print('No user found for that email.');
+        showDialog(
+            context: context,
+            barrierDismissible: true,
+            builder: (BuildContext context) {
+              return ErrorDialog("No user found for that email.");
+            });
       } else if (e.code == 'wrong-password') {
-        print('Wrong password provided for that user.');
+        showDialog(
+            context: context,
+            barrierDismissible: true,
+            builder: (BuildContext context) {
+              return ErrorDialog("Wrong password provided for that user.");
+            });
       }
+    } catch (e) {
+      showDialog(
+          context: context,
+          barrierDismissible: true,
+          builder: (BuildContext context) {
+            return ErrorDialog("$e");
+          });
     }
   }
 
@@ -121,7 +150,7 @@ class _LoginViewState extends State<LoginView> {
                   width: MediaQuery.of(context).size.width * 0.95,
                   height: 55,
                   child: TextField(
-                    obscureText: isobsecure,
+                    obscureText: StringConstants.isobsecure,
                     controller: password,
                     decoration: InputDecoration(
                         label: const Text("Password"),
@@ -131,10 +160,11 @@ class _LoginViewState extends State<LoginView> {
                         suffixIcon: GestureDetector(
                           onTap: () {
                             setState(() {
-                              isobsecure = !isobsecure;
+                              StringConstants.isobsecure =
+                                  !StringConstants.isobsecure;
                             });
                           },
-                          child: Icon(isobsecure
+                          child: Icon(StringConstants.isobsecure
                               ? Icons.visibility
                               : Icons.visibility_off),
                         )),
@@ -177,10 +207,6 @@ class _LoginViewState extends State<LoginView> {
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10))),
                     onPressed: () {
-                      if(email.text == "admin@gmail.com" && password.text == "123456"){
-                        Navigator.pushReplacement( 
-                          context, MaterialPageRoute( builder: (context) => HomeView()));
-                      }
                       login();
                     },
                     child: const Text(

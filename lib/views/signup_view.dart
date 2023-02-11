@@ -2,7 +2,10 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:hackathon_project/utils/constant.dart';
 import 'package:hackathon_project/views/login_view.dart';
+import '../widgets/error.dart';
+import '../widgets/loading.dart';
 
 class SignupView extends StatefulWidget {
   const SignupView({Key? key}) : super(key: key);
@@ -14,26 +17,47 @@ class SignupView extends StatefulWidget {
 class _SignupViewState extends State<SignupView> {
   TextEditingController username = TextEditingController();
   TextEditingController password = TextEditingController();
-
-  bool isobsecure = true;
-
   signup() async {
     try {
-      final credential =
-          await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: username.text,
-        password: password.text,
+      showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (BuildContext context) {
+          return LoadingDialog();
+        },
       );
+      UserCredential userCredential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(
+              email: username.text, password: password.text);
+      username.text = "";
+      password.text = "";
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => LoginView()));
+        context,
+        MaterialPageRoute(builder: (context) => LoginView()),
+      );
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
-        print('The password provided is too weak.');
+        showDialog(
+            context: context,
+            barrierDismissible: true,
+            builder: (BuildContext context) {
+              return ErrorDialog("The password provided is too weak.");
+            });
       } else if (e.code == 'email-already-in-use') {
-        print('The account already exists for that email.');
+        showDialog(
+            context: context,
+            barrierDismissible: true,
+            builder: (BuildContext context) {
+              return ErrorDialog("The account already exists for that email.");
+            });
       }
     } catch (e) {
-      print(e);
+      showDialog(
+          context: context,
+          barrierDismissible: true,
+          builder: (BuildContext context) {
+            return ErrorDialog("$e");
+          });
     }
   }
 
@@ -125,7 +149,7 @@ class _SignupViewState extends State<SignupView> {
                   width: MediaQuery.of(context).size.width * 0.95,
                   height: 55,
                   child: TextField(
-                    obscureText: isobsecure,
+                    obscureText: StringConstants.isobsecure,
                     controller: password,
                     decoration: InputDecoration(
                         label: const Text("Password"),
@@ -135,10 +159,11 @@ class _SignupViewState extends State<SignupView> {
                         suffixIcon: GestureDetector(
                           onTap: () {
                             setState(() {
-                              isobsecure = !isobsecure;
+                              StringConstants.isobsecure =
+                                  !StringConstants.isobsecure;
                             });
                           },
-                          child: Icon(isobsecure
+                          child: Icon(StringConstants.isobsecure
                               ? Icons.visibility
                               : Icons.visibility_off),
                         )),
@@ -161,7 +186,7 @@ class _SignupViewState extends State<SignupView> {
                 ),
                 ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                        primary: Color(0xff0D986A),
+                        backgroundColor: Color(0xff0D986A),
                         minimumSize:
                             Size(MediaQuery.of(context).size.width * 0.95, 60),
                         shape: RoundedRectangleBorder(

@@ -1,300 +1,172 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:hackathon_project/components/tabbar_component.dart';
-import 'package:hackathon_project/views/product_view.dart';
+import '../models/product.dart';
+import '../utils/constant.dart';
+import '../widgets/categories.dart';
+import '../widgets/homeappbar.dart';
+import '../widgets/itemwidget.dart';
 
-class HomeView extends StatefulWidget {
-  const HomeView({Key? key}) : super(key: key);
+class HomeView extends StatelessWidget {
+  const HomeView({super.key});
+  getProducts() async {
+    CollectionReference ref = FirebaseFirestore.instance.collection("products");
+    var produducts = await ref.get();
+    print(produducts);
+    return produducts;
+  }
 
-  @override
-  State<HomeView> createState() => _HomeViewState();
-}
-
-class _HomeViewState extends State<HomeView> {
-  TextEditingController search = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: Row(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 10),
-              child: Image.asset("assets/images/loginlogo.png"),
-            ),
-            const SizedBox(
-              width: 15,
-            ),
-            const Text(
-              "PLANTIFY",
-              style: TextStyle(
-                  color: Color(0xff002140),
-                  fontSize: 20,
-                  fontWeight: FontWeight.w700),
-            ),
-          ],
-        ),
-        backgroundColor: Colors.white,
-        elevation: 0,
-        actions: [
-          IconButton(
-              onPressed: () {},
-              icon: const Icon(
-                Icons.notifications_outlined,
-                color: Colors.black,
-              )),
-          const SizedBox(
-            width: 10,
-          ),
-          IconButton(
-              onPressed: () {},
-              icon: const Icon(
-                Icons.menu,
-                color: Colors.black,
-              ))
-        ],
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        backgroundColor: Colors.white,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Padding(
-              padding: EdgeInsets.only(top: 8),
-              child: Icon(
-                Icons.home_outlined,
-                color: Colors.black,
-              ),
-            ),
-            label: '',
-          ),
-          BottomNavigationBarItem(
-            icon: Padding(
-              padding: EdgeInsets.only(top: 8),
-              child: Icon(
-                Icons.favorite_border_outlined,
-                color: Colors.black,
-              ),
-            ),
-            label: '',
-          ),
-          BottomNavigationBarItem(
-            icon: Padding(
-              padding: EdgeInsets.only(top: 8),
-              child: Icon(
-                Icons.shopping_bag_outlined,
-                color: Colors.black,
-              ),
-            ),
-            label: '',
-          ),
-          BottomNavigationBarItem(
-            icon: Padding(
-              padding: EdgeInsets.only(top: 8),
-              child: Icon(
-                Icons.person_outline,
-                color: Colors.black,
-              ),
-            ),
-            label: '',
-          ),
-        ],
-      ),
       body: SingleChildScrollView(
         child: Column(
           children: [
+            HomeAppBar(),
+            Banner1(),
+            SearchBar(),
             Container(
-                width: MediaQuery.of(context).size.width * 0.8,
-                child: Image.asset(
-                  "assets/images/banner.png",
-                  fit: BoxFit.cover,
-                )),
-            const SizedBox(height: 20),
-            Row(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: Container(
-                    width: MediaQuery.of(context).size.width * 0.80,
-                    child: TextField(
-                      controller: search,
-                      decoration: InputDecoration(
-                        hintText: "Search",
-                        prefixIcon: const Icon(Icons.search),
-                        suffixIcon: const Icon(Icons.qr_code_scanner),
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(14)),
-                      ),
-                    ),
-                  ),
-                ),
-                Container(
-                    width: MediaQuery.of(context).size.width * 0.12,
-                    height: 54,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(14),
-                        border: Border.all(color: Colors.black)),
-                    child: IconButton(
-                      onPressed: () {},
-                      icon: const Icon(Icons.filter),
-                    )),
-              ],
-            ),
-            Container(
-              height: 50,
-              width: MediaQuery.of(context).size.width * 1,
+              margin: EdgeInsets.only(bottom: 10),
+              height: 40,
               child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: tab.length,
-                itemBuilder: (context, ind) {
-                  return Container(
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(15, 10, 10, 5),
-                      child: Text("${tab[ind]}"),
-                    ),
-                  );
-                },
-              ),
+                  scrollDirection: Axis.horizontal,
+                  itemCount: StringConstants.categories.length,
+                  itemBuilder: (BuildContext context, int i) {
+                    return InkWell(
+                      child: CategoriesWidget(StringConstants.categories[i]),
+                      onTap: () {
+                        StringConstants.selectedIndex = i;
+                      },
+                    );
+                  }),
             ),
-            const SizedBox(height: 20),
-            GestureDetector(
-              onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => ProductView()));
+            FutureBuilder(
+              future: getProducts(),
+              builder: (context, AsyncSnapshot snapshot) {
+                return ListView.builder(
+                    physics: NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemCount: snapshot.data.docs.length,
+                    itemBuilder: (context, i) {
+                      if (snapshot.hasData) {
+                        var myProduct = snapshot.data.docs[i];
+                        Product product = Product(
+                            myProduct["pid"],
+                            myProduct["product_title"],
+                            myProduct["product_price"],
+                            myProduct["product_discription"],
+                            myProduct["size"],
+                            myProduct["fertilizer"],
+                            myProduct["light"],
+                            myProduct["water"],
+                            myProduct["rating"],
+                            myProduct["product_cat"]);
+                        return ItemsWidget(
+                            product, ColorConstants.productColors[i]);
+                      } else {
+                        return CircularProgressIndicator();
+                      }
+                    });
               },
-              child: Stack(
-                children: [
-                  Image.asset("assets/images/banner2.png"),
-                  Positioned(
-                      right: 1,
-                      top: 55,
-                      child: Image.asset(
-                        "assets/images/flower.png",
-                      )),
-                ],
-              ),
             ),
-            const SizedBox(
-              height: 20,
-            ),
-            GestureDetector(
-              onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => ProductView()));
-              },
-              child: Stack(
-                children: [
-                  Image.asset("assets/images/banner3.png"),
-                  Positioned(
-                      right: 1,
-                      top: 55,
-                      child: Image.asset("assets/images/sage.png")),
-                ],
-              ),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            Image.asset("assets/images/banner4.png"),
-            const SizedBox(
-              height: 20,
-            ),
-            GestureDetector(
-              onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => ProductView()));
-              },
-              child: Stack(
-                children: [
-                  Image.asset("assets/images/banner5.png"),
-                  Positioned(
-                      right: 1,
-                      top: 55,
-                      child: Image.asset("assets/images/croton.png")),
-                ],
-              ),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            GestureDetector(
-              onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => ProductView()));
-              },
-              child: Stack(
-                children: [
-                  Image.asset("assets/images/banner6.png"),
-                  Positioned(
-                      right: 1,
-                      top: 55,
-                      child: Image.asset("assets/images/nest.png")),
-                ],
-              ),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            Image.asset("assets/images/ad.png"),
-            const SizedBox(
-              height: 20,
-            ),
-            GestureDetector(
-              onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => ProductView()));
-              },
-              child: Stack(
-                children: [
-                  Image.asset("assets/images/banner7.png"),
-                ],
-              ),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            GestureDetector(
-              onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => ProductView()));
-              },
-              child: Stack(
-                children: [
-                  Image.asset("assets/images/banner8.png"),
-                  Positioned(
-                      right: 1,
-                      top: 55,
-                      child: Image.asset("assets/images/alovera.png")),
-                ],
-              ),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            const Divider(
-              color: Color(0xff002140),
-              thickness: 2,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: Container(
-                    width: MediaQuery.of(context).size.width * 0.70,
-                    child: const Text(
-                      "Plant a Life Live amongst Living Spread the joy",
-                      style: TextStyle(
-                          color: Color(0xff002140),
-                          fontSize: 34,
-                          fontWeight: FontWeight.w700),
-                    ),
-                  ),
-                ),
-              ],
-            )
           ],
         ),
+      ),
+    );
+  }
+}
+
+class SearchBar extends StatelessWidget {
+  const SearchBar({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Container(
+            height: 45,
+            width: MediaQuery.of(context).size.width * 0.77,
+            decoration: BoxDecoration(
+                border: Border.all(color: Color(ColorConstants.GrayColor)),
+                borderRadius: BorderRadius.circular(10)),
+            padding: EdgeInsets.symmetric(horizontal: 10),
+            child: TextFormField(
+              decoration: new InputDecoration(
+                border: InputBorder.none,
+                hintText: "Search here...",
+              ),
+            ),
+          ),
+          Container(
+            height: 45,
+            width: MediaQuery.of(context).size.width * 0.1,
+            decoration: BoxDecoration(
+                border: Border.all(color: Color(ColorConstants.GrayColor)),
+                borderRadius: BorderRadius.circular(10)),
+            padding: EdgeInsets.symmetric(horizontal: 10),
+            child: Image.asset(
+              ImageContants.options,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class Banner1 extends StatelessWidget {
+  const Banner1({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+      margin: EdgeInsets.symmetric(horizontal: 20),
+      decoration: BoxDecoration(
+        image: DecorationImage(
+            image: AssetImage(ImageContants.banner1), fit: BoxFit.cover),
+        color: Color(ColorConstants.OffWhite),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Container(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              StringConstants.banner1Head,
+              style: TextStyle(
+                  fontSize: 22,
+                  color: Color(ColorConstants.PrimaryColor),
+                  fontFamily: FontsConstants.Bold),
+            ),
+          ),
+          SizedBox(
+            height: 20,
+          ),
+          Container(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              StringConstants.banner1Desc,
+              style: TextStyle(
+                  fontSize: 16,
+                  color: Color(ColorConstants.PrimaryColor),
+                  fontWeight: FontWeight.normal,
+                  fontFamily: FontsConstants.Regular),
+            ),
+          ),
+          SizedBox(
+            height: 5,
+          ),
+          Container(
+            color: Color(ColorConstants.GreenColor),
+            width: 60,
+            height: 5,
+          )
+        ],
       ),
     );
   }

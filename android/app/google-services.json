@@ -1,63 +1,41 @@
 {
   "project_info": {
-    "project_number": "92002343724",
-    "project_id": "hackathon-project-f6cae",
-    "storage_bucket": "hackathon-project-f6cae.appspot.com"
+    "project_number": "117769440838",
+    "project_id": "hackathon-project-43c7a",
+    "storage_bucket": "hackathon-project-43c7a.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:92002343724:android:1da9b3a5813de92b22aa89",
-        "android_client_info": {
-          "package_name": "com.android.application"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "92002343724-fcan8ua1d94fpf2g41rt53arabhq12lr.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyAf8qnqYW3EUEHftITnnAVaE-iTjPMdQyk"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "92002343724-fcan8ua1d94fpf2g41rt53arabhq12lr.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:92002343724:android:dfa77684ea7cf4bc22aa89",
+        "mobilesdk_app_id": "1:117769440838:android:cb5b757a7cdf85a3f58447",
         "android_client_info": {
           "package_name": "com.example.hackathon_project"
         }
       },
       "oauth_client": [
         {
-          "client_id": "92002343724-fcan8ua1d94fpf2g41rt53arabhq12lr.apps.googleusercontent.com",
+          "client_id": "117769440838-f7qvbkt8a40hov78199dutkstrldgv8j.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAf8qnqYW3EUEHftITnnAVaE-iTjPMdQyk"
+          "current_key": "AIzaSyCrGj862TtDTVHfZxhXI1xcSty_QT-87Zs"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "92002343724-fcan8ua1d94fpf2g41rt53arabhq12lr.apps.googleusercontent.com",
+              "client_id": "117769440838-f7qvbkt8a40hov78199dutkstrldgv8j.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "117769440838-q3ci71rssl1gu990cqi64t1u174r0fse.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.hackathonProject"
+              }
             }
           ]
         }

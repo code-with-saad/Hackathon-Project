@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:hackathon_project/views/login_view.dart';
 
@@ -22,7 +24,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 color: Color(0xff0D986A),
                 borderRadius: BorderRadius.circular(40),
               ),
-              child: Image.asset("assets/images/logo.png"),
+              child: Image.asset("assets/images/logo1.png"),
             ),
             const SizedBox(
               height: 20,
