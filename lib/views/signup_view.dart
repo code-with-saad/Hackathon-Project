@@ -72,7 +72,7 @@ class _SignupViewState extends State<SignupView> {
                 Padding(
                   padding:
                       const EdgeInsets.symmetric(vertical: 40, horizontal: 20),
-                  child: Image.asset("assets/images/loginlogo.png"),
+                  child: Image.asset("assets/images/login screen logo.jpeg"),
                 ),
                 const SizedBox(
                   width: 15,

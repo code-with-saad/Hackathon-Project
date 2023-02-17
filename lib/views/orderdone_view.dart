@@ -47,7 +47,7 @@ class _OrderDoneViewState extends State<OrderDoneView> {
                   const SizedBox(
                     height: 60,
                   ),
-                  Image.asset("assets/images/mainlogo.png"),
+                  Image.asset("assets/images/order_Logo.png"),
                   const SizedBox(
                     height: 15,
                   ),
@@ -62,7 +62,7 @@ class _OrderDoneViewState extends State<OrderDoneView> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const HomeView()));
+                                builder: (context) => HomeView()));
                       },
                       child: const Text(
                         "Done",

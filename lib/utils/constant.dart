@@ -1,5 +1,4 @@
-import '../models/product.dart';
-import '../models/categories.dart';
+import 'package:flutter/material.dart';
 
 class StringConstants {
   static var products = [
@@ -9,7 +8,7 @@ class StringConstants {
     ImageContants.product4,
     ImageContants.product5,
   ];
-  static List<Product> cartItems = [];
+  // static List<Product> cartItems = [];
   static String appName = "Plantify";
   static String register = "Signup";
 
@@ -30,14 +29,6 @@ class StringConstants {
   static String banner1Desc = "Get your 1st plant\n@ 40% off";
   static var selectedIndex = 0;
   static int total = 0;
-  static var categories = [
-    Categories("Top Pick", true),
-    Categories("Indoor", false),
-    Categories("Outdoor", false),
-    Categories("Seeds", false),
-    Categories("Plants", false),
-    Categories("Others", false)
-  ];
   static bool isobsecure = true;
 }
 
@@ -82,6 +73,7 @@ class ColorConstants {
   static var GreenColor = 0xFF0D986A;
   static var lightGreen = 0xFF9CE5CB;
   static var normalGreen = 0xFF0D986A;
+
   static var productColors = [
     0xFFFFE899,
     0xFF8CEC8A,
@@ -90,4 +82,17 @@ class ColorConstants {
     0xFFDEEC8A,
     0xFFF5EDA8
   ];
+}
+
+class AppColors {
+  static var app_Green_Color = Color(0xff0D986A);
+  static var app_black_Color = Color(0xff002140);
+  static var app_textfield_Color = Color(0xff004A6166);
+  static var app_light_blue_Color = Color(0xff9CE5CB);
+  static var app_white_Color = Color(0xffFFFFFF);
+  static var app_grey_Color = Color(0xff004A6166);
+  static var app_light_green_Color = Color(0xff9CE5CB);
+  static var app_light_yellow_Color = Color(0xffFFE899);
+  static var app_light_brown_green_Color = Color(0xffB2E28D);
+  static var app_light_sand_Color = Color(0xffDEEC8A);
 }
